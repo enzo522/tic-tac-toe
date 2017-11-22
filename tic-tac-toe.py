@@ -20,40 +20,26 @@ class Player:
         else:
             return False
 
-    # 플레이어가 게임에서 승리할 수 있는지 확인
-    def canWin(self):
-        winChecker = [ 0, 0, 0 ] # 승리 여부 확인 리스트
-
-        for t in self.occupied: # 보드판의 각 행 중 플레이어가 소유하고 있는 행의 갯수를 증가시킴
-            winChecker[t[0]] += 1
-
-        for i in winChecker: # 3x3 보드판 중 하나의 행을 플레이어가 모두 소유하고 있으면 승리 가능
-            if i >= 3:
-                return True
-
+    # 보드판의 행 혹은 열을 모두 소유하고 있는지 확인 (0: 행 / 1: 열)
+    def checkRowCol(self, which):
         winChecker = [ 0, 0, 0 ]
 
-        for t in self.occupied: # 보드판의 각 열 중 플레이어가 소유하고 있는 열의 갯수를 증가시킴
-            winChecker[t[1]] += 1
+        for t in self.occupied: # 소유하고 있는 행 혹은 열의 갯수 증가
+            winChecker[t[which]] += 1
 
-        for i in winChecker: # 3x3 보드판 중 하나의 열을 플레이어가 모두 소유하고 있으면 승리 가능
+        for i in winChecker:
             if i >= 3:
                 return True
 
-        winChecker = [ (0, 0), (1, 1), (2, 2) ] # 승리 가능한 대각선 버튼 리스트 1
-
-        # 승리 가능한 대각선 버튼을 모두 소유하고 있으면 승리 가능
-        if winChecker[0] in self.occupied and winChecker[1] in self.occupied and winChecker[2] in self.occupied:
-            return True
-
-        winChecker = [ (0, 2), (1, 1), (2, 0) ] # 승리 가능한 대각선 버튼 리스트 2
-
-        # 승리 가능한 대각선 버튼을 모두 소유하고 있으면 승리 가능
-        if winChecker[0] in self.occupied and winChecker[1] in self.occupied and winChecker[2] in self.occupied:
-            return True
-
-        # 위의 승리 조건을 모두 만족시키지 못하면 승리 불가
         return False
+
+    # 보드판의 해당 대각선을 모두 소유하고 있는지 확인
+    def checkDiagonal(self, condition):
+        return condition[0] in self.occupied and condition[1] in self.occupied and condition[2] in self.occupied
+
+    # 플레이어가 게임에서 승리할 수 있는지 확인
+    def canWin(self): # 행 / 열 / 대각선 중 하나라도 모두 소유하고 있으면 승리 가능
+        return self.checkRowCol(0) or self.checkRowCol(1) or self.checkDiagonal([ (0, 0), (1, 1), (2, 2) ]) or self.checkDiagonal([ (0, 2), (1, 1), (2, 0) ])
 '''
 end of Player class
 '''
